@@ -47,3 +47,32 @@ func TestAddMultipleLogFiles(t *testing.T) {
                 failTest(t, 4, len(log.log_files))
         }
 }
+
+func TestAddNoPermissionLogFile(t *testing.T) {
+        var empty = new(struct{})
+        log := newLogger()
+        path := "/logfile.log"
+        err := log.AddLogFile(path, empty)
+        if err == nil {
+                failTest(t, nil, err.Error())
+        }
+        if len(log.log_files) != 0 {
+                failTest(t, 0, len(log.log_files))
+        }
+}
+
+func TestAddMultipleNoPermissionLogFiles(t *testing.T) {
+        var empty = new(struct{})
+        log := newLogger()
+        paths := []string{"/logfile0.log",
+                "/logfile1.log",
+                "/logfile2.log",
+                "/logfile3.log"}
+        err := log.AddLogsFile(paths, empty)
+        if err == nil {
+                failTest(t, nil, err.Error())
+        }
+        if len(log.log_files) != 0 {
+                failTest(t, 0, len(log.log_files))
+        }
+}
