@@ -55,7 +55,7 @@ func (l Logger) exist(path string) (*File, bool) {
         return nil, false
 }
 
-func (l *Logger) AddLogFile(path string, empty *struct{}) error {
+func (l *Logger) AddLogFile(path string) error {
         if err := verifyPath(path); err != nil {
                 return err
         }
@@ -67,10 +67,10 @@ func (l *Logger) AddLogFile(path string, empty *struct{}) error {
         return nil
 }
 
-func (l *Logger) AddLogsFile(paths []string, empty *struct{}) error {
+func (l *Logger) AddLogsFile(paths []string) error {
         var err error
         for _, path := range paths {
-                if err = l.AddLogFile(path, empty); err != nil {
+                if err = l.AddLogFile(path); err != nil {
                         return err
                 }
         }
