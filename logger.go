@@ -33,7 +33,7 @@ func verifyPath(path string) error {
                         if err != nil {
                                 return err
                         }
-                        defer file.Close()
+                        file.Close()
                 } else {
                         return err
                 }
@@ -42,7 +42,7 @@ func verifyPath(path string) error {
 }
 
 func newLogger() *Logger {
-        logger := &Logger{log_files: make([]*File, 0, 20)}
+        logger := &Logger{log_files: []*File{}}
         return logger
 }
 
