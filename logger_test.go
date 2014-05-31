@@ -2,6 +2,8 @@ package main
 
 import (
         "bufio"
+        "encoding/json"
+        "net"
         "os"
         "strings"
         "testing"
@@ -168,6 +170,36 @@ func TestWriteOnLogFiles(t *testing.T) {
                         time.Sleep(time.Second * 1)
                 }
                 assertContent(path, lorem[i], t)
+        }
+}
+
+func TestTcpServer(t *testing.T) {
+        paths := []string{"./logfile0.log",
+                "./logfile1.log",
+                "./logfile2.log",
+                "./logfile3.log"}
+        asyncFunc := func(path, lorem string) {
+                tcpAddr, err := net.ResolveTCPAddr("tcp", "localhost:9000")
+                if err != nil {
+                        failTest(t, nil, err.Error())
+                }
+                conn, err := net.DialTCP("tcp", nil, tcpAddr)
+                if err != nil {
+                        failTest(t, nil, err.Error())
+                }
+                json_data, err := json.Marshal(
+                        map[string]string{
+                                "logfile": path, "msg": lorem,
+                        })
+                if err != nil {
+                        failTest(t, nil, err.Error())
+                }
+                conn.Write(json_data)
+                assertContent(path, lorem, t)
+                conn.Close()
+        }
+        for i := 0; i < 4; i++ {
+                go asyncFunc(paths[i], lorem[i])
         }
 }
 
